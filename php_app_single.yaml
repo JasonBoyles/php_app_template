@@ -124,8 +124,6 @@ parameters:
     type: number
     default: 128
 
-
-
 resources:
 
   ssh_key:
@@ -133,6 +131,24 @@ resources:
     properties:
       name: { get_param: ssh_keypair_name }
       save_private_key: true
+
+  mysql_root_password:
+    type: "OS::Heat::RandomString"
+    properties:
+      length: 32
+      sequence: lettersdigits
+
+  mysql_debian_password:
+    type: "OS::Heat::RandomString"
+    properties:
+      length: 32
+      sequence: lettersdigits
+
+  mysql_repl_password:
+    type: "OS::Heat::RandomString"
+    properties:
+      length: 32
+      sequence: lettersdigits
 
   php_server:
     type: "Rackspace::Cloud::Server"
@@ -171,6 +187,7 @@ resources:
         cookbook 'apt'
         cookbook 'chef-client'
         cookbook 'apache2'
+        cookbook 'mysql'
         cookbook 'application',
           :git => 'https://github.com/opscode-cookbooks/application.git'
         cookbook 'application_php',
@@ -191,6 +208,11 @@ resources:
           :git => 'https://github.com/JasonBoyles/rax_php_app.git'
 
       node:
+        mysql:
+          server_root_password: { get_attr: [mysql_root_password, value] }
+          server_debian_password: { get_attr: [mysql_debian_password, value] }
+          server_repl_password: { get_attr: [mysql_repl_password, value] }
+          bind_address: 127.0.0.1
         php_app:
           destination: { get_param: destination }
           deploy_key: { get_param: deploy_key }
@@ -209,7 +231,8 @@ resources:
             backend_host: 127.0.0.1
         run_list: ["recipe[memcached]",
                    "recipe[rax_php_app]",
-                   "recipe[php-ioncube]"]
+                   "recipe[php-ioncube]",
+                   "recipe[mysql::server]"]
 
 
 outputs:
@@ -218,3 +241,12 @@ outputs:
 
   server_ip:
     value: { get_attr: [php_server, accessIPv4] }
+
+  mysql_root_password:
+    value: { get_attr: [mysql_root_password, value] }
+
+  mysql_debian_password:
+    value: { get_attr: [mysql_debian_password, value] }
+
+  mysql_repl_password:
+    value: { get_attr: [mysql_repl_password, value] }

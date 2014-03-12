@@ -75,6 +75,9 @@ Use `heat output-show <OUTPUT NAME>` to get the value fo a specific output.
 
 * `private_key`: SSH private that can be used to login as root to the server.
 * `server_ip`: Public IP address of the cloud server
+* `mysql_root_password`: password for the MySQL root account
+* `mysql_debian_password`: password for the Debian debian-sys-maint user
+* `mysql_repl_password`: password for the MySQL repl user
 
 For multi-line values, the response will come in an escaped form. To get rid of
 the escapes, use `echo -e '<STRING>' > file.txt`. For vim users, a substitution
