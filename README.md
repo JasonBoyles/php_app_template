@@ -51,7 +51,7 @@ Parameters
 Parameters can be replaced with your own values when standing up a stack. Use
 the `-P` flag to specify a custom parameter.
 
-* `destination`: he directory into which the application will be installed.
+* `destination`: he directory into which the application will be installed. (Default: /var/www/vhosts/application)
 * `deploy_key`: the private key to deploy from a private git repo.
 * `http_port`: the port where http connections are accepted (Default: 80)
 * `https_port`: the port where https connections are accepted (Default: 443)
